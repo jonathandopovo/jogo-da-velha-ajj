@@ -12,17 +12,17 @@ exports.listarPlayers = async (req, res) => {
 exports.inserirPlayer = async (req, res) => {
   try {
     const { player1, player2 } = req.body;
-    const search1 = await Player.findOne({ where: { playerName: player1 } });
-    const search2 = await Player.findOne({ where: { playerName: player2 } });
+    const search1 = await Player.findOne({ where: { name: player1 } });
+    const search2 = await Player.findOne({ where: { name: player2 } });
     if (search1) {
       await Player.create({
-        playerName: player1,
+        name: player1,
         score: 0,
       });
     }
     if (search2) {
       await Player.create({
-        playerName: player2,
+        name: player2,
         score: 0,
       });
     }
@@ -35,9 +35,9 @@ exports.inserirPlayer = async (req, res) => {
 exports.atualizarPlayer = async (req, res) => {
   try {
     const { player } = req.body;
-    const search = await Player.findOne({ where: { playerName: player } });
+    const search = await Player.findOne({ where: { name: player } });
     search++;
-    await Player.update({ score: search }, { where: { playerName: player } });
+    await Player.update({ score: search }, { where: { name: player } });
     res.status(200);
   } catch (err) {
     res.status(500);
