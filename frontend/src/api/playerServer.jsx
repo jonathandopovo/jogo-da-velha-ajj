@@ -23,7 +23,7 @@ export const apiAddPlayer = async (player1, player2) => {
     });
 
     if (!response.ok) {
-      throw new Error("Houve erro na adição do usuário");
+      throw new Error("Falha na requisição!");
     }
 
     const result = await response.json();
@@ -44,7 +44,7 @@ export const apiUpdatePlayer = async (player) => {
     });
 
     if (!response.ok) {
-      throw new Error("Houve erro na adição do usuário");
+      throw new Error("Falha na requisição!");
     }
 
     const result = await response.json();
