@@ -1,5 +1,18 @@
-export const Board = ({ xIsNext, squares, onPlay, moves }) => {
-  const handleClick = (i) =>{
+import Rank from "../Rank";
+import { apiUpdatePlayer } from "../../api/playerServer";
+
+export const Board = ({
+  xIsNext,
+  squares,
+  onPlay,
+  moves,
+  data,
+  player1,
+  player2,
+  load,
+  setLoad,
+}) => {
+  const handleClick = (i) => {
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
@@ -10,14 +23,41 @@ export const Board = ({ xIsNext, squares, onPlay, moves }) => {
       nextSquares[i] = "O";
     }
     onPlay(nextSquares);
-  }
+  };
+
+  const calculateWinner = (squares) => {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[a] === squares[c]
+      ) {
+        return squares[a];
+      }
+    }
+    return null;
+  };
 
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = `O Vencedor foi "${winner}"`;
+    let winnerName = winner == "X" ? player1 : player2;
+    apiUpdatePlayer(winnerName);
+    setLoad(!load);
+    status = `${winnerName} venceu!`;
   } else {
-    status = `Vez de "${xIsNext ? "X" : "O"}"`;
+    status = `Vez de ${xIsNext ? player1 : player2}`;
   }
 
   return (
@@ -76,8 +116,9 @@ export const Board = ({ xIsNext, squares, onPlay, moves }) => {
           />
         </div>
       </div>
-      <div className="game-info overflow-auto">
-        <ul className="w-[200px] h-full text-center">{moves}</ul>
+      <div className="game-info overflow-auto w-[200px] h-full text-center">
+        {moves}
+        <Rank data={data} />
       </div>
     </>
   );
@@ -92,24 +133,4 @@ const Square = ({ value, onSquareClick, className }) => {
       {value}
     </button>
   );
-};
-
-const calculateWinner = (squares) => {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
 };

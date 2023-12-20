@@ -1,22 +1,16 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../../db.config');
+const mongoose = require("mongoose");
 
-const Player = sequelize.define('Player', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  },
+const playerSchema = new mongoose.Schema({
   name: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    type: String,
+    required: true,
   },
   score: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 0,
+    type: Number,
+    required: true,
   },
 });
+
+const Player = mongoose.model("Player", playerSchema);
 
 module.exports = Player;

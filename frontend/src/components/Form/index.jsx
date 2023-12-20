@@ -1,15 +1,37 @@
-export const Form = ({setStart}) => {
+import { apiAddPlayer } from "../../api/playerServer";
+
+export const Form = ({
+  setStart,
+  setLoad,
+  load,
+  player1,
+  setPlayer1,
+  player2,
+  setPlayer2,
+}) => {
+  const addPlayers = (e) => {
+    e.preventDefault();
+    addPlayer();
+    setLoad(!load);
+    setStart(true);
+  };
+
+  const addPlayer = () => {
+    apiAddPlayer(player1, player2);
+  };
+
   return (
     <>
-      <div className="m-auto space-y-4">
+      <form className="m-auto space-y-4" onSubmit={addPlayers}>
         <div>
           <label htmlFor="player1" className="text-sm">
             Jogador 1:
           </label>
           <input
             type="text"
-            name="player1"
+            onChange={(e) => setPlayer1(e.target.value)}
             className="border rounded-md py-1 px-2 w-full"
+            required
           />
         </div>
         <div>
@@ -18,19 +40,18 @@ export const Form = ({setStart}) => {
           </label>
           <input
             type="text"
-            name="player2"
+            onChange={(e) => setPlayer2(e.target.value)}
             className="border rounded-md py-1 px-2 w-full"
+            required
           />
         </div>
         <button
+          type="submit"
           className="bg-green-500 text-white px-2 w-full py-1 rounded-[3px] shadow-md hover:shadow-xl"
-          onClick={() => {
-            setStart(true);
-          }}
         >
           Cadastrar
         </button>
-      </div>
+      </form>
     </>
   );
 };

@@ -6,7 +6,8 @@ export const apiGetPlayers = async () => {
     if (!response.ok) {
       throw new Error("Falha na requisição!");
     }
-    return await response.json();
+    const data = await response.json()
+    return data;
   } catch (err) {
     throw new Error("Erro ao carregar os dados!");
   }

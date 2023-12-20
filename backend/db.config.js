@@ -1,18 +1,17 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const mongoose = require("mongoose");
 require("dotenv").config();
 
-const sequelize = {
-  config: new Sequelize(
-    process.env.DB_DATABASE,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-      host: process.env.DB_HOST,
-      dialect: "mysql",
-      port: process.env.DB_PORT,
-    }
-  ),
-  dataTypes: DataTypes,
-};
+const url = process.env.MONGO_URI;
 
-module.exports = sequelize;
+mongoose.connect(url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "Error connecting to MongoDB:"));
+db.once("open", () => {
+  console.log("Connection to MongoDB established!");
+});
+
+module.exports = db;

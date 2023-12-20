@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Board } from "./components/Board";
 import { Form } from "./components/Form";
+import { apiGetPlayers } from "./api/playerServer";
 
 const Game = () => {
   const [history, setHistory] = useState([Array(9).fill(null)]);
@@ -8,6 +9,19 @@ const Game = () => {
   const [start, setStart] = useState(false);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
+  const [data, setData] = useState([]);
+  const [load, setLoad] = useState(false);
+  const [player1, setPlayer1] = useState("");
+  const [player2, setPlayer2] = useState("");
+
+  useEffect(() => {
+    fetchPessoas();
+  }, [load]);
+
+  const fetchPessoas = async () => {
+    const result = await apiGetPlayers();
+    setData(result);
+  };
 
   const handlePlay = (nextSquares) => {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -15,24 +29,24 @@ const Game = () => {
     setCurrentMove(nextHistory.length - 1);
   };
 
+  const testStart = () => {
+    history.map((squares, move) => {
+      if (move > 0) {
+      }
+    });
+  };
+
   const moves = history.map((squares, move) => {
-    let description;
-    let className;
-    if (move > 0) {
-      description = `Ir para a ${move}ª jogada`;
-      className = "hover:text-blue-500";
-    } else {
-      description = "Começar";
-      className =
-        "bg-green-500 text-white px-2 py-1 rounded-[3px] shadow-md hover:shadow-xl mb-6";
-    }
-    return (
-      <li key={move}>
-        <button className={className} onClick={() => setCurrentMove(move)}>
-          {description}
+    if (!move > 0) {
+      return (
+        <button
+          className="bg-green-500 text-white px-2 py-1 rounded-[3px] shadow-md hover:shadow-xl mb-6"
+          onClick={() => setCurrentMove(move)}
+        >
+          Começar
         </button>
-      </li>
-    );
+      );
+    }
   });
 
   return (
@@ -45,10 +59,23 @@ const Game = () => {
               squares={currentSquares}
               onPlay={handlePlay}
               moves={moves}
+              data={data}
+              player1={player1}
+              player2={player2}
+              setLoad={setLoad}
+              load={load}
             />
           </>
         ) : (
-          <Form setStart={setStart} />
+          <Form
+            setStart={setStart}
+            setLoad={setLoad}
+            load={load}
+            player1={player1}
+            setPlayer1={setPlayer1}
+            player2={player2}
+            setPlayer2={setPlayer2}
+          />
         )}
       </div>
     </div>
